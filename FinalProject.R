@@ -29,7 +29,7 @@ data[drops] <- list(NULL)
 # convert some of our variables from factor to numeric
 # XXX TO-DO, Add all of the factor variables that need to be changed
 # to this list 
-convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL")
+convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL", "md_earn_wne_p10", "UNITID", "OPEID")
 
 # Convert from factor to numeric! 
 data[,convert_to_num] <- lapply(data[,convert_to_num], as.numeric)
@@ -54,3 +54,27 @@ hist(data$log_md_earn)
 # the qqplot also looks really good! 
 qqnorm(data$log_md_earn)
 qqline(data$log_md_earn)
+
+
+#Building our model 
+#changing variable to numeric
+data$UGDS_BLACK_NUM <- as.numeric(levels(data$UGDS_BLACK))[data$UGDS_BLACK]
+data$PPTUG_EF_NUM <- as.numeric(levels(data$PPTUG_EF))[data$PPTUG_EF]
+
+#testing variable significance by itself
+regmodel1=lm(md_earn_wne_p10_NUM ~ UGDS_BLACK_NUM, data=data)
+summary(regmodel)
+
+regmodel2 = lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM, data =data)
+summary(regmodel2)
+
+#running full model with all variables
+model1=lm(md_earn_wne_p10_NUM ~ UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
+summary(model1)
+
+model2=lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM+UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
+summary(model2)
+
+
+
+
