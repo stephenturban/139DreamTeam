@@ -34,7 +34,14 @@ convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL", "md_earn_wne_p10", "UNITID", "OPEI
 # Convert from factor to numeric! 
 data[,convert_to_num] <- lapply(data[,convert_to_num], as.numeric)
 
+#function that calls all the variable names
+names = colnames(data)
 
+#What we should do next
+#Figure out what variables we want to drop 
+#Group the majors, states 
+#then convert whats left to numeric
+#check assumptions and transformations 
 
 ######## CHECKING ASSUMPTIONS
 
