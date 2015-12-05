@@ -1,14 +1,3 @@
-##### Looking at assumptions of insitution types 
-install.packages('ggplot2') # This only needs to be run once
-
-# I often need scales and grid when I work with ggplot2
-install.packages(c('scales', 'grid'))
-library('data.table')
-library('ggplot2')
-library('scales')
-library('grid')
-
-
 fname=file.choose()
 #choose the 4.6 MB data! 
 data=read.csv(fname,header=T)
@@ -18,7 +7,6 @@ dim(data)
 
 # Run the data set testing mean earnings
 typeof(data$UGDS_WHITE)
-
 
 # Convert our Y variable to numeric (was factor) (THIS IS A TEST)
 # We will delete this later
@@ -38,31 +26,31 @@ drops <- c("opeid6", "CITY", "INSTURL", "NPCURL", "SATVR25", "SATVR75", "SATMT25
 # delete all of the columns that we don't need 
 data[drops] <- list(NULL) 
 
+convert_to_string <- c("INSTNM","STABBR","PREDDEG")
+data[,convert_to_string] <- lapply(data[,convert_to_string], as.character)
+
+convert_to_factor <- c("CONTROL")
+data[,convert_to_factor] <- lapply(data[,convert_to_string], as.factor)
+
+
 # convert some of our variables from factor to numeric
 # XXX TO-DO, Add all of the factor variables that need to be changed
 # to this list 
-convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL", "md_earn_wne_p10", "UNITID", "OPEID")
+convert_to_int<- c("LOCALE","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","C200_L4_POOLED_SUPP","md_earn_wne_p10",
+                    "UNITID", "OPEID",)
+convert_to_float<- c("PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
 
 # Convert from factor to numeric! 
 data[,convert_to_num] <- lapply(data[,convert_to_num], as.numeric)
 
-# Convert University Type to factor! 
-data$CONTROL = as.factor(data$CONTROL)
-
 #function that calls all the variable names
 names = colnames(data)
-
 
 #What we should do next
 #Figure out what variables we want to drop 
 #Group the majors, states 
 #then convert whats left to numeric
 #check assumptions and transformations 
-
-
-hist()
-
-plot(data$md_earn_wne_p10_NUM ~ CONTROL, data = data)
 
 ######## CHECKING ASSUMPTIONS
 
@@ -83,20 +71,6 @@ hist(data$log_md_earn)
 qqnorm(data$log_md_earn)
 qqline(data$log_md_earn)
 
-
-#  This is a graph that looks the different median earnings 10 years 
-# after graduation for the different types of schools 
-ggplot(data, aes(x=log(md_earn_wne_p10_NUM), color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
-
-ggplot(data, aes(x=md_earn_wne_p10_NUM, color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
-
-
-
-## So, notice that there are is a second bump around 50,000. this occurs 
-# because of the university of phoenix. The University of Phoenix has 69 campuses
-# around the united states. Each of these schools has a mean income of 53400. 
-# we hypothesized that this might occur because the university of phoenix has older students
-# as a result 10 years out they might have a higher income than other for profit schools. 
 
 #Building our model 
 #changing variable to numeric
