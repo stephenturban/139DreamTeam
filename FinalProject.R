@@ -39,7 +39,9 @@ drops <- c("opeid6", "CITY", "INSTURL", "NPCURL", "SATVR25", "SATVR75", "SATMT25
 data[drops] <- list(NULL) 
 
 # convert some of our variables from factor to numeric
-convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL")
+# XXX TO-DO, Add all of the factor variables that need to be changed
+# to this list 
+convert_to_num <- c("SAT_AVG", "SAT_AVG_ALL", "md_earn_wne_p10", "UNITID", "OPEID")
 
 # Convert from factor to numeric! 
 data[,convert_to_num] <- lapply(data[,convert_to_num], as.numeric)
@@ -47,6 +49,15 @@ data[,convert_to_num] <- lapply(data[,convert_to_num], as.numeric)
 # Convert University Type to factor! 
 data$CONTROL = as.factor(data$CONTROL)
 
+#function that calls all the variable names
+names = colnames(data)
+
+
+#What we should do next
+#Figure out what variables we want to drop 
+#Group the majors, states 
+#then convert whats left to numeric
+#check assumptions and transformations 
 
 
 hist()
@@ -73,7 +84,6 @@ qqnorm(data$log_md_earn)
 qqline(data$log_md_earn)
 
 
-
 #  This is a graph that looks the different median earnings 10 years 
 # after graduation for the different types of schools 
 ggplot(data, aes(x=log(md_earn_wne_p10_NUM), color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
@@ -87,4 +97,26 @@ ggplot(data, aes(x=md_earn_wne_p10_NUM, color=CONTROL, fill=CONTROL, group=CONTR
 # around the united states. Each of these schools has a mean income of 53400. 
 # we hypothesized that this might occur because the university of phoenix has older students
 # as a result 10 years out they might have a higher income than other for profit schools. 
+
+#Building our model 
+#changing variable to numeric
+data$UGDS_BLACK_NUM <- as.numeric(levels(data$UGDS_BLACK))[data$UGDS_BLACK]
+data$PPTUG_EF_NUM <- as.numeric(levels(data$PPTUG_EF))[data$PPTUG_EF]
+
+#testing variable significance by itself
+regmodel1=lm(md_earn_wne_p10_NUM ~ UGDS_BLACK_NUM, data=data)
+summary(regmodel)
+
+regmodel2 = lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM, data =data)
+summary(regmodel2)
+
+#running full model with all variables
+model1=lm(md_earn_wne_p10_NUM ~ UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
+summary(model1)
+
+model2=lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM+UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
+summary(model2)
+
+
+
 
