@@ -108,7 +108,8 @@ summary(model2)
 # strange bump at around 50,0000 
 ggplot(data, aes(x=md_earn_wne_p10_NUM, color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
 
-
+# roughly the same with logged data 
+ggplot(data, aes(x=log(md_earn_wne_p10_NUM), color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
 
 
 # We investigated this by looking through our data set and trying to understand
