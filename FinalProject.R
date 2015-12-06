@@ -1,3 +1,13 @@
+##### Looking at assumptions of insitution types 
+install.packages('ggplot2') # This only needs to be run once
+# I often need scales and grid when I work with ggplot2
+install.packages(c('scales', 'grid'))
+library('data.table')
+library('ggplot2')
+library('scales')
+library('grid')
+
+
 fname=file.choose()
 #choose the 4.6 MB data! 
 data=read.csv(fname,header=T)
@@ -94,5 +104,24 @@ model2=lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM+UGDS_WHITE_NUM+UGDS_BLACK_NUM, data
 summary(model2)
 
 
+
+## So, if we investigate the data, we compared the three types of institutions. 
+# However, as we looked at the graphs, it appeared that private for-profit had a
+# strange bump at around 50,0000 
+ggplot(data, aes(x=md_earn_wne_p10_NUM, color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
+
+# roughly the same with logged data 
+ggplot(data, aes(x=log(md_earn_wne_p10_NUM), color=CONTROL, fill=CONTROL, group=CONTROL)) + geom_density(alpha=0.3) + theme_light(base_size=16) + xlab("Median Earnings 10 Years after Matriculation") + ylab("")
+
+
+# We investigated this by looking through our data set and trying to understand
+# why there would be some data points that showed an uptick at 50,000.
+# We thought there might be a nother type of private institution that we would need to
+# Take into account. 
+
+# We found, however, that this was a result of phoenix university. There are 69 campuses 
+# for phoenix (and they all report median earnings of 53,400), so it appears that there is a large
+# bump, but this is really attributed to one university.  We believe that Phoenix univeristy 
+# might have a bump because it's students could have a higher average age. 
 
 
