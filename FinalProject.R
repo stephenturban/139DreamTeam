@@ -89,6 +89,8 @@ library('glmnet')
 library('lars')
 
 n = which(names(data) == "md_earn_wne_p10")
+which(names(data) == "CONTROL")
+
 n_total = dim(data)[2]
 
 # Because we have a lot of missing variables, we need to impute our data 
@@ -102,13 +104,15 @@ for(i in 1:n_total){
 # we are then going to use every variable that this method uses within our linear model
 significant_variables = glmnet(x=as.matrix(data[,-(n)]), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
 
-significant_variables = glmnet(x=scale(as.matrix(data[22:23])), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
+# look for the significant variables of all of the numeric. 
+significant_variables = glmnet(x=scale(as.matrix(data[convert_to_numeric])), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
+
 
 summary(significant_variables)
 
 
 # we set the lambda value to be .01 because we want there to be a medium penalty
-coef(significant_variables, s=.01)
+coef(significant_variables, s=.005)
 
 
 # LASSO 
