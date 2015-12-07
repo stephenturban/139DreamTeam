@@ -15,45 +15,36 @@ data=read.csv(fname,header=T)
 # Look at the dimensions of our data
 dim(data)
 
-# Run the data set testing mean earnings
-typeof(data$UGDS_WHITE)
-
-# Convert our Y variable to numeric (was factor) (THIS IS A TEST)
-# We will delete this later
-data$md_earn_wne_p10_NUM <- as.numeric(levels(data$md_earn_wne_p10))[data$md_earn_wne_p10]
-data$UGDS_WHITE_NUM <- as.numeric(levels(data$UGDS_WHITE))[data$UGDS_WHITE]
-
-# this is just a test to see if our modeling works! 
-fit_test <- lm(md_earn_wne_p10_NUM ~ UGDS_WHITE_NUM, data=data)
-
-# show results of test model 
-summary(fit_test)
-
-
 # now let's drop some of the data we don't need! 
 drops <- c("opeid6", "CITY", "INSTURL", "NPCURL", "SATVR25", "SATVR75", "SATMT25", "SATMT75", "SATWR25", "SATWR75", "ACTEN25", "ACTCM25", "ACTCM75", "ACTEN75","ACTMT25", "ACTMT75", "ACTWR25", "ACTWR75", "ACTCMMID", "ACTENMID", "ACTMTMID", "ACTWRMID")
 
 # delete all of the columns that we don't need 
 data[drops] <- list(NULL) 
 
-convert_to_string <- c("INSTNM","STABBR","PREDDEG")
+convert_to_string <- c("INSTNM","STABBR")
 data[,convert_to_string] <- lapply(data[,convert_to_string], as.character)
 
-convert_to_factor <- c("CONTROL")
-data[,convert_to_factor] <- lapply(data[,convert_to_string], as.factor)
-
+# We change control to become a factor (was a float.) 
+data$CONTROL = as.factor(data$CONTROL)
+data$CONTROL = as.factor(data$CONTROL)
 
 # convert some of our variables from factor to numeric
-# XXX TO-DO, Add all of the factor variables that need to be changed
-# to this list 
-convert_to_int<- c("LOCALE","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10",
-                    "UNITID", "OPEID")
-convert_to_float<- c("C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
+convert_to_numeric<- c("LOCALE","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10", "UNITID", "OPEID","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
 
 # Convert from factor to numeric! 
-data[,convert_to_int] <- lapply(data[,convert_to_num], as.integer)
-data[,convert_to_float] <- lapply(data[,convert_to_num], as.float)
+data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.character)
+data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.numeric)
 
+
+data$PCIP12 = as.character(data$PCIP12) 
+
+data$PCIP12 = as.numeric(data$PCIP12)
+
+data$PCIP16<-as.numeric(as.vector(data$PCIP16))
+
+data$PCIP19 = as.numeric(data$PCIP19)
+
+is.numeric(data$PCIP12)
 
 #function that calls all the variable names
 names = colnames(data)
