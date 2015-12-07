@@ -29,7 +29,7 @@ data$CONTROL = as.factor(data$CONTROL)
 data$CONTROL = as.factor(data$CONTROL)
 
 # convert some of our variables from factor to numeric
-convert_to_numeric<- c("gt_25k_p6", "LOCALE","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10", "UNITID", "OPEID","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
+convert_to_numeric<- c("gt_25k_p6","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10", "UNITID", "OPEID","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
 
 # Convert from factor to numeric! 
 data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.character)
@@ -95,25 +95,20 @@ n_total = dim(data)[2]
 
 # Because we have a lot of missing variables, we need to impute our data 
 # This essentially puts in the mean of each variable in place of each data
+## IMPUTE DATA
 for(i in 1:n_total){
   data[is.na(data[,i]),i] = mean(data[,i], na.rm=TRUE)
 }
 
+# identify which variables are numeric. We use this because lasso can only use
+# numeric variables 
+numeric_variables<- c("gt_25k_p6","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
+
+
 # We are attempting to use LASSO in order to pick out the variables that we want to look at
 # we choose LASSO because it is a variable selection method. 
 # we are then going to use every variable that this method uses within our linear model
-significant_variables = glmnet(x=as.matrix(data[,-(n)]), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
-
 # look for the significant variables of all of the numeric. 
-significant_variables = glmnet(x=scale(as.matrix(data[convert_to_numeric])), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
-
-
-summary(significant_variables)
-
-
-# we set the lambda value to be .01 because we want there to be a medium penalty
-coef(significant_variables, s=.005)
-
 
 # LASSO 
 # Way to get rid of variables that we don't need them. 
@@ -122,5 +117,27 @@ coef(significant_variables, s=.005)
 
 # Probably should pick 10-15 variables that do relate to 
 # Use a logical argument to get rid of some of the variables 
-# 
+significant_variables = glmnet(x=scale(as.matrix(data[numeric_variables])), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
+
+
+# we set the lambda value to be .01 because we want there to be a medium penalty
+# we choose which variables are significant via the lasso
+coef(significant_variables, s=.01)
+
+
+
+## So, we end up with a model that has these variables as significant 
+# UGDS_NRA, UGDS_ASIAN, PCIP45, PCIP27, PCIP26, PCIP14, SATMTMID, PPTUG_EF, PREDDEG, GRAD_DEBT_MDN_SUPP,
+# gt_25k_p6,
+
+
+# These are the factor variables we add because we are interested in them
+# CONTROL, LOCALE, region
+
+
+
+
+
+
+
 
