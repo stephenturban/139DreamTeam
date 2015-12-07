@@ -36,19 +36,6 @@ data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.character)
 data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.numeric)
 
 
-data$PCIP12 = as.character(data$PCIP12) 
-
-data$PCIP12 = as.numeric(data$PCIP12)
-
-data$PCIP16<-as.numeric(as.vector(data$PCIP16))
-
-data$PCIP19 = as.numeric(data$PCIP19)
-
-is.numeric(data$PCIP12)
-
-#function that calls all the variable names
-names = colnames(data)
-
 #What we should do next
 #Figure out what variables we want to drop 
 #Group the majors, states 
@@ -58,11 +45,11 @@ names = colnames(data)
 ######## CHECKING ASSUMPTIONS
 
 # let's check the normality of median earnings 
-hist(data$md_earn_wne_p10_NUM)
+hist(data$md_earn_wne_p10)
 
 # the histogram looks okay, let's check out the qqplot 
-qqnorm(data$md_earn_wne_p10_NUM)
-qqline(data$md_earn_wne_p10_NUM)
+qqnorm(data$md_earn_wne_p10)
+qqline(data$md_earn_wne_p10)
 
 # this doesn't appear too normal. In particular, it looks
 # like there might be a right tail, let's log transform the data
