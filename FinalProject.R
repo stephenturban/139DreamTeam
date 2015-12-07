@@ -55,11 +55,11 @@ qqline(data$md_earn_wne_p10)
 # like there might be a right tail, let's log transform the data
 
 # Check out the histogram - this looks great! 
-hist(data$log_md_earn)
+hist(log(data$md_earn_wne_p10))
 
 # the qqplot also looks really good! 
-qqnorm(data$log_md_earn)
-qqline(data$log_md_earn)
+qqnorm(log(data$md_earn_wne_p10))
+qqline(log(data$md_earn_wne_p10))
 
 
 #Building our model 
