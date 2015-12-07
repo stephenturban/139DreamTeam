@@ -155,11 +155,35 @@ pairs(~log(md_earn_wne_p10) + PCIP14 + PCIP12 + SATMTMID + PCTPELL, data = data)
 
 
 
-## Variables to investigat: PCIP 14, UGDS_ASIAN, RPY_3YR_RT_SUPP
+## Variables to investigate: PCIP 14, UGDS_ASIAN, RPY_3YR_RT_SUPP
 
 
-# 
+plot(data$RPY_3YR_RT_SUPP, log(data$md_earn_wne_p))
 
+# let's try a squaring our data to see if this works better
+# this looks much better
+plot((data$RPY_3YR_RT_SUPP * data$RPY_3YR_RT_SUPP) , log(data$md_earn_wne_p))
+
+## REPORT WRITER. 
+# Please note:  RPY_3YR_RT_SUPP = 3-year repayment rate  
+hist(data$RPY_3YR_RT_SUPP)
+
+# let's investigate PCIP14 
+plot(data$PCIP14,log(data$md_earn_wne_p10))
+
+# looks like it needs to be logged ! 
+plot(log(data$PCIP14),log(data$md_earn_wne_p10))
+
+# UGDS_ASIAN looks fine after all
+plot(data$UGDS_ASIAN,log(data$md_earn_wne_p10))
+
+
+## Let's transform these actually in the data 
+# this will help us when we want to do lm(.) (AKA to use all of the variables) 
+data$RPY_3YR_RT_SUPP = (data$RPY_3YR_RT_SUPP * data$RPY_3YR_RT_SUPP)
+data$PCIP14 = log(data$PCIP14)
+
+v_important = c(md_earn_wne_p10, UGDS_ASIAN, UGDS, PCIP45, PCIP14, PCIP12, SATMTMID, PCTPELL, PREDDEG, PCTFLOAN, RPY_3YR_RT_SUPP, GRAD_DEBT_MDN_SUPP, GRAD_DEBT_MDN10YR_SUPP, NPT4_PRIV, NPT4_PUB, CONTROL, LOCALE, region, )
 
 
 
