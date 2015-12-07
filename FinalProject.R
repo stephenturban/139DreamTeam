@@ -7,6 +7,13 @@ library('ggplot2')
 library('scales')
 library('grid')
 
+# Installs packages in order to use LASSO 
+install.packages(c('glmnet', 'lars'))
+library('Matrix')
+library('foreach')
+library('glmnet')
+library('lars')
+
 
 fname=file.choose()
 #choose the 4.6 MB data! 
@@ -80,13 +87,6 @@ ggplot(data, aes(x=log(md_earn_wne_p10), color=CONTROL, fill=CONTROL, group=CONT
 # for phoenix (and they all report median earnings of 53,400), so it appears that there is a large
 # bump, but this is really attributed to one university.  We believe that Phoenix univeristy 
 # might have a bump because it's students could have a higher average age. 
-
-# Installs packages in order to use LASSO 
-install.packages(c('glmnet', 'lars'))
-library('Matrix')
-library('foreach')
-library('glmnet')
-library('lars')
 
 n = which(names(data) == "md_earn_wne_p10")
 which(names(data) == "CONTROL")
@@ -181,9 +181,22 @@ plot(data$UGDS_ASIAN,log(data$md_earn_wne_p10))
 ## Let's transform these actually in the data 
 # this will help us when we want to do lm(.) (AKA to use all of the variables) 
 data$RPY_3YR_RT_SUPP = (data$RPY_3YR_RT_SUPP * data$RPY_3YR_RT_SUPP)
-data$PCIP14 = log(data$PCIP14)
+# plus 1 in order to avoid logging 0 
+data$PCIP14 = log(data$PCIP14 + 1)
 
-v_important = c(md_earn_wne_p10, UGDS_ASIAN, UGDS, PCIP45, PCIP14, PCIP12, SATMTMID, PCTPELL, PREDDEG, PCTFLOAN, RPY_3YR_RT_SUPP, GRAD_DEBT_MDN_SUPP, GRAD_DEBT_MDN10YR_SUPP, NPT4_PRIV, NPT4_PUB, CONTROL, LOCALE, region, )
+v_important = c("md_earn_wne_p10", "UGDS_ASIAN", "UGDS", "PCIP45", "PCIP14", "PCIP12", "SATMTMID", "PCTPELL", "PREDDEG", "PCTFLOAN", "RPY_3YR_RT_SUPP", "GRAD_DEBT_MDN_SUPP", "GRAD_DEBT_MDN10YR_SUPP", "NPT4_PRIV", "NPT4_PUB", "CONTROL", "LOCALE", "region")
+
+# Let's also complete the transformation of earning to its log form
+data$md_earn_wne_p10 = log(data$md_earn_wne_p10 + 1)
+
+# so, now we have transformed each of the variables!  
+
+model1 = lm(md_earn_wne_p10 ~ . , data = data[v_important])
+
+summary(model1)
+
+
+
 
 
 
