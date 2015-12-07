@@ -62,27 +62,6 @@ qqnorm(log(data$md_earn_wne_p10))
 qqline(log(data$md_earn_wne_p10))
 
 
-#Building our model 
-#changing variable to numeric
-data$UGDS_BLACK_NUM <- as.numeric(levels(data$UGDS_BLACK))[data$UGDS_BLACK]
-data$PPTUG_EF_NUM <- as.numeric(levels(data$PPTUG_EF))[data$PPTUG_EF]
-
-#testing variable significance by itself
-regmodel1=lm(md_earn_wne_p10_NUM ~ UGDS_BLACK_NUM, data=data)
-summary(regmodel)
-
-regmodel2 = lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM, data =data)
-summary(regmodel2)
-
-#running full model with all variables
-model1=lm(md_earn_wne_p10_NUM ~ UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
-summary(model1)
-
-model2=lm(md_earn_wne_p10_NUM ~ PPTUG_EF_NUM+UGDS_WHITE_NUM+UGDS_BLACK_NUM, data=data)
-summary(model2)
-
-
-
 ## So, if we investigate the data, we compared the three types of institutions. 
 # However, as we looked at the graphs, it appeared that private for-profit had a
 # strange bump at around 50,0000 
