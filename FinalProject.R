@@ -67,6 +67,7 @@ names = colnames(data)
 # let's check the normality of median earnings 
 hist(data$md_earn_wne_p10_NUM)
 
+
 # the histogram looks okay, let's check out the qqplot 
 qqnorm(data$md_earn_wne_p10_NUM)
 qqline(data$md_earn_wne_p10_NUM)
