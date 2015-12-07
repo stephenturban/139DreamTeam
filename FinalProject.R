@@ -81,4 +81,26 @@ ggplot(data, aes(x=log(md_earn_wne_p10), color=CONTROL, fill=CONTROL, group=CONT
 # bump, but this is really attributed to one university.  We believe that Phoenix univeristy 
 # might have a bump because it's students could have a higher average age. 
 
+# Installs packages in order to use LASSO 
+install.packages(c('glmnet', 'lars'))
+library('Matrix')
+library('foreach')
+library('glmnet')
+library('lars')
+
+n = which(names(data) == "md_earn_wne_p10")
+
+
+significant_variables = glmnet(as.matrix(data[,-(n)]), log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
+
+
+
+# LASSO 
+# Way to get rid of variables that we don't need them. 
+# This is a way of pairing down the data if you don't know how to do it. 
+# It penalizes for variables (and pick the penalty term for us.) 
+
+# Probably should pick 10-15 variables that do relate to 
+# Use a logical argument to get rid of some of the variables 
+# 
 
