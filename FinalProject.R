@@ -89,9 +89,18 @@ library('glmnet')
 library('lars')
 
 n = which(names(data) == "md_earn_wne_p10")
+n_total = dim(data)[2]
+
+# Because we have a lot of missing variables, we need to impute our data 
+# This essentially puts in the mean of each variable in place of each data
+for(i in 1:n_total){
+  data[is.na(data[,i]),i] = mean(data[,i], na.rm=TRUE)
+}
 
 
-significant_variables = glmnet(as.matrix(data[,-(n)]), log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
+data = transform(data, y = ifelse(is.na(y), mean(y, na.rm=TRUE), y))
+# We are attempting to use LASSO in order to pick out the variables that we want to look at
+significant_variables = glmnet(x=as.data.frame(data[,-(n)]), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
 
 
 
