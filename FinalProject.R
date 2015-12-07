@@ -16,7 +16,7 @@ data=read.csv(fname,header=T)
 dim(data)
 
 # now let's drop some of the data we don't need! 
-drops <- c("opeid6", "INSTNM","STABBR", "CITY", "INSTURL", "NPCURL", "SATVR25", "SATVR75", "SATMT25", "SATMT75", "SATWR25", "SATWR75", "ACTEN25", "ACTCM25", "ACTCM75", "ACTEN75","ACTMT25", "ACTMT75", "ACTWR25", "ACTWR75", "ACTCMMID", "ACTENMID", "ACTMTMID", "ACTWRMID")
+drops <- c("gt_25k_p6","opeid6", "INSTNM","STABBR", "CITY", "INSTURL", "NPCURL", "SATVR25", "SATVR75", "SATMT25", "SATMT75", "SATWR25", "SATWR75", "ACTEN25", "ACTCM25", "ACTCM75", "ACTEN75","ACTMT25", "ACTMT75", "ACTWR25", "ACTWR75", "ACTCMMID", "ACTENMID", "ACTMTMID", "ACTWRMID")
 
 # delete all of the columns that we don't need 
 data[drops] <- list(NULL) 
@@ -29,7 +29,7 @@ data$CONTROL = as.factor(data$CONTROL)
 data$CONTROL = as.factor(data$CONTROL)
 
 # convert some of our variables from factor to numeric
-convert_to_numeric<- c("gt_25k_p6","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10", "UNITID", "OPEID","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
+convert_to_numeric<- c("RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","md_earn_wne_p10", "UNITID", "OPEID","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
 
 # Convert from factor to numeric! 
 data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.character)
@@ -102,11 +102,14 @@ for(i in 1:n_total){
 
 # identify which variables are numeric. We use this because lasso can only use
 # numeric variables 
-numeric_variables<- c("gt_25k_p6","RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
+numeric_variables<- c("RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","NPT42_PUB","NPT43_PUB","NPT44_PUB","NPT45_PUB","NPT41_PRIV","NPT42_PRIV","NPT43_PRIV","NPT44_PRIV","NPT45_PRIV","GRAD_DEBT_MDN_SUPP","GRAD_DEBT_MDN10YR_SUPP","RPY_3YR_RT_SUPP","C150_4_POOLED_SUPP","PREDDEG", "C200_L4_POOLED_SUPP","PCTFLOAN","UG25abv","RET_FT4","RET_FTL4","RET_PT4","RET_PTL4","PCTPELL","PPTUG_EF","SATVRMID","SATMTMID","SATWRMID","SAT_AVG","SAT_AVG_ALL","PCIP01","PCIP03","PCIP04","PCIP05","PCIP09","PCIP10","PCIP11","PCIP12","PCIP13","PCIP14","PCIP15","PCIP16","PCIP19","PCIP22","PCIP23","PCIP24","PCIP25","PCIP26","PCIP27","PCIP29","PCIP30","PCIP31","PCIP38","PCIP39","PCIP40","PCIP41","PCIP42","PCIP43","PCIP44","PCIP45","PCIP46","PCIP47","PCIP48","PCIP49","PCIP50","PCIP51","PCIP52","PCIP54","UGDS","UGDS_WHITE","UGDS_BLACK","UGDS_HISP","UGDS_ASIAN","UGDS_AIAN","UGDS_NHPI","UGDS_2MOR","UGDS_NRA","UGDS_UNKN")
 
 
 # We are attempting to use LASSO in order to pick out the variables that we want to look at
 # we choose LASSO because it is a variable selection method. 
+# In particular, we chose LASSO because we wanted to have an unbiased way of selecting
+# predictors. Otherwise, we would create a linear model with 10-15 variables  
+
 # we are then going to use every variable that this method uses within our linear model
 # look for the significant variables of all of the numeric. 
 
@@ -122,20 +125,40 @@ significant_variables = glmnet(x=scale(as.matrix(data[numeric_variables])), y=lo
 
 # we set the lambda value to be .01 because we want there to be a medium penalty
 # we choose which variables are significant via the lasso
-coef(significant_variables, s=.01)
+# Recall that the penalty s is related to how much you penalize for each 
+# added variable you put into the model. The lower the number, the more likely you
+# are to have more avraiables. 
+coef(significant_variables, s=.025)
 
 
 
 ## So, we end up with a model that has these variables as significant 
-# UGDS_NRA, UGDS_ASIAN, PCIP45, PCIP27, PCIP26, PCIP14, SATMTMID, PPTUG_EF, PREDDEG, GRAD_DEBT_MDN_SUPP,
-# gt_25k_p6,
-
+#  UGDS_ASIAN, UGDS, PCIP45, PCIP14, PCIP12, SATMTMID, PCTPELL, PREDDEG, PCTFLOAN, RPY_3YR_RT_SUPP, GRAD_DEBT_MDN_SUPP, GRAD_DEBT_MDN10YR_SUPP
+# NPT4_PRIV, NPT4_PUB, 
 
 # These are the factor variables we add because we are interested in them
 # CONTROL, LOCALE, region
 
 
 
+#####################
+#  So, let's check the assumption of linearity in our model! 
+
+# Let's investigate the linearity of these variables  
+pairs(~log(md_earn_wne_p10) + PREDDEG + PCTFLOAN + RPY_3YR_RT_SUPP, data = data) 
+
+pairs(~log(md_earn_wne_p10) + GRAD_DEBT_MDN_SUPP + GRAD_DEBT_MDN10YR_SUPP + NPT4_PRIV + NPT4_PUB , data = data)
+
+pairs(~log(md_earn_wne_p10) + UGDS_ASIAN +  UGDS + PCIP45, data = data) 
+
+pairs(~log(md_earn_wne_p10) + PCIP14 + PCIP12 + SATMTMID + PCTPELL, data = data) 
+
+
+
+## Variables to investigat: PCIP 14, UGDS_ASIAN, RPY_3YR_RT_SUPP
+
+
+# 
 
 
 
