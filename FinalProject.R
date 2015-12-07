@@ -43,11 +43,6 @@ data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.character)
 data[,convert_to_numeric] <- lapply(data[,convert_to_numeric], as.numeric)
 
 
-#What we should do next
-#Figure out what variables we want to drop 
-#Group the majors, states 
-#then convert whats left to numeric
-#check assumptions and transformations 
 
 ######## CHECKING ASSUMPTIONS
 
@@ -118,6 +113,21 @@ numeric_variables<- c("RELAFFIL","CURROPER","NPT4_PUB","NPT4_PRIV","NPT41_PUB","
 # This is a way of pairing down the data if you don't know how to do it. 
 # It penalizes for variables (and pick the penalty term for us.) 
 
+#LASSO 
+#we're trying to minimize risiduals, but there's a penalty for adding a variable,
+#which is tough for us because you want 10,15,20 not 60 variables in a linear model
+#we have 100 and we want 15, 20--we have two options
+ # look through, and choose the 20 we think would be most importnat (qualitative)
+  #pick 15 20 vars that are significant for us--mathematical way of doing it, instead
+#  of a qualitative look
+ # we added 3 more we though
+  #were important
+  
+#in order to 
+ # we can't run LASSO when we have NA's so we replace NA's with the mean of the other
+  # so we can run LASSO (single imputing)
+# weakness of model--false number of values equal to mean
+
 # Probably should pick 10-15 variables that do relate to 
 # Use a logical argument to get rid of some of the variables 
 significant_variables = glmnet(x=scale(as.matrix(data[numeric_variables])), y=log(data$md_earn_wne_p10),  standardize = T, intercept = F, family = c("gaussian"), alpha = 1)
@@ -128,6 +138,9 @@ significant_variables = glmnet(x=scale(as.matrix(data[numeric_variables])), y=lo
 # Recall that the penalty s is related to how much you penalize for each 
 # added variable you put into the model. The lower the number, the more likely you
 # are to have more avraiables. 
+
+#s - how rigorous you want to be about selecting the variables
+#use LASSO to select variables, but use lm models to find coefficients
 coef(significant_variables, s=.025)
 
 
@@ -156,8 +169,6 @@ pairs(~log(md_earn_wne_p10) + PCIP14 + PCIP12 + SATMTMID + PCTPELL, data = data)
 
 
 ## Variables to investigate: PCIP 14, UGDS_ASIAN, RPY_3YR_RT_SUPP
-
-
 plot(data$RPY_3YR_RT_SUPP, log(data$md_earn_wne_p))
 
 # let's try a squaring our data to see if this works better
@@ -184,6 +195,7 @@ data$RPY_3YR_RT_SUPP = (data$RPY_3YR_RT_SUPP * data$RPY_3YR_RT_SUPP)
 # plus 1 in order to avoid logging 0 
 data$PCIP14 = log(data$PCIP14 + 1)
 
+# These are all the important variables
 v_important = c("md_earn_wne_p10", "UGDS_ASIAN", "UGDS", "PCIP45", "PCIP14", "PCIP12", "SATMTMID", "PCTPELL", "PREDDEG", "PCTFLOAN", "RPY_3YR_RT_SUPP", "GRAD_DEBT_MDN_SUPP", "GRAD_DEBT_MDN10YR_SUPP", "NPT4_PRIV", "NPT4_PUB", "CONTROL", "LOCALE", "region")
 
 # Let's also complete the transformation of earning to its log form
@@ -195,7 +207,11 @@ model1 = lm(md_earn_wne_p10 ~ . , data = data[v_important])
 
 summary(model1)
 
+#we used LASSO for the variable selection instead of the in-class methods
+#because in class we started with a lot fewer variables so we didn't have to worry about this
+#lm isn't good at selecting variables when we're dealing with 100 variables
 
+# next step: make a linear model
 
 
 
