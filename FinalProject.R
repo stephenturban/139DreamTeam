@@ -213,8 +213,41 @@ summary(model1)
 #lm isn't good at selecting variables when we're dealing with 100 variables
 
 # next step: make a linear model
+# intercept only
+model0 = lm(md_earn_wne_p10~1, data=data[v_important])
+summary(model0)
 
+library(MASS)
 
+# Forward
+step_forward = step(model0, scope=list(upper=model1), direction="forward")
+summary(step_forward)
+step_forward$anova
 
+# Backward
+step_backward = step(model1, scope=list(lower=model0), direction="backward")
+summary(step_backward)
+step_backward$anova
 
+# Stepwise
+step_both = step(model1, scope=list(lower=model0, upper=model1), direction="both")
+summary(step_both)
+step_both$anova
 
+#linear model including interactions 
+FullModel=lm(md_earn_wne_p10 ~ .^2, data = data[v_important])
+summary(FullModel)
+
+#Stepwise
+step_both_full = step(model1, scope = list(lower = model0, upper = FullModel), direction = "both")
+summary(step_both_full)
+step_both_full$anova
+
+#Cross Validation Test 
+library(cvTools)
+set.seed(1234)
+cv_assignment = cvFolds(n, K=5, type="random")
+cvFit(model0,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
+cvFit(model1,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
+cvFit(FullModel,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
+cvFit(step_both,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
