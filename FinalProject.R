@@ -14,6 +14,10 @@ library('foreach')
 library('glmnet')
 library('lars')
 
+#Install packages for cross validaation tests 
+install.packages('cvTools')
+library('cvTools')
+
 
 fname=file.choose()
 #choose the 4.6 MB data! 
@@ -232,15 +236,29 @@ step_forward = step(model0, scope=list(upper=model1), direction="forward")
 summary(step_forward)
 step_forward$anova
 
+
+model2 = lm(md_earn_wne_p10 ~ RPY_3YR_RT_SUPP + GRAD_DEBT_MDN10YR_SUPP + 
+              PCIP12 + PCTPELL + PCTFLOAN + SATMTMID + LOCALE + PREDDEG + 
+              UGDS_ASIAN + CONTROL + PCIP14 + region + UGDS + PCIP45 + 
+              NPT4_PRIV, data = data[v_important])
+
 # Backward
 step_backward = step(model1, scope=list(lower=model0), direction="backward")
 summary(step_backward)
 step_backward$anova
 
+model3 = lm(md_earn_wne_p10 ~ UGDS_ASIAN + UGDS + PCIP45 + PCIP14 + PCIP12 + 
+              SATMTMID + PCTPELL + PREDDEG + PCTFLOAN + RPY_3YR_RT_SUPP + 
+              GRAD_DEBT_MDN_SUPP + NPT4_PRIV + CONTROL + LOCALE + region, data = data[v_important])
+
 # Stepwise
 step_both = step(model1, scope=list(lower=model0, upper=model1), direction="both")
 summary(step_both)
 step_both$anova
+
+model4 = lm(md_earn_wne_p10 ~ UGDS_ASIAN + UGDS + PCIP45 + PCIP14 + PCIP12 + 
+              SATMTMID + PCTPELL + PREDDEG + PCTFLOAN + RPY_3YR_RT_SUPP + 
+              GRAD_DEBT_MDN_SUPP + NPT4_PRIV + CONTROL + LOCALE + region, data = data[v_important]) 
 
 #linear model including interactions 
 FullModel=lm(md_earn_wne_p10 ~ .^2, data = data[v_important])
@@ -251,11 +269,19 @@ step_both_full = step(model1, scope = list(lower = model0, upper = FullModel), d
 summary(step_both_full)
 step_both_full$anova
 
+#Comparing AIC 
+extractAIC(model0)
+extractAIC(model1)
+extractAIC(model2)
+extractAIC(model3)
+extractAIC(model4)
+extractAIC(FullModel)
+
 #Cross Validation Test 
-library(cvTools)
 set.seed(1234)
 cv_assignment = cvFolds(n, K=5, type="random")
-cvFit(model0,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
-cvFit(model1,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
-cvFit(FullModel,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
-cvFit(step_both,data=data,K=5,R=1,y=md_earn_wne_p10,foldtype=c("random"))
+cvFit(model0,data=data[v_important],K=5,R=1,y=data[v_important]$md_earn_wne_p10,foldtype=c("random"))
+cvFit(model1,data=data[v_important],K=5,R=1,y=data[v_important]$md_earn_wne_p10,foldtype=c("random"))
+cvFit(model2,data=data[v_important],K=5,R=1,y=data[v_important]$md_earn_wne_p10,foldtype=c("random"))
+cvFit(model3,data=data[v_important],K=5,R=1,y=data[v_important]$md_earn_wne_p10,foldtype=c("random"))
+cvFit(model4,data=data[v_important],K=5,R=1,y=data[v_important]$md_earn_wne_p10,foldtype=c("random"))
