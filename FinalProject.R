@@ -168,7 +168,6 @@ pairs(~log(md_earn_wne_p10) + UGDS_ASIAN +  UGDS + PCIP45, data = data)
 pairs(~log(md_earn_wne_p10) + PCIP14 + PCIP12 + SATMTMID + PCTPELL, data = data) 
 
 
-
 ## Variables to investigate: PCIP 14, UGDS_ASIAN, RPY_3YR_RT_SUPP
 plot(data$RPY_3YR_RT_SUPP, log(data$md_earn_wne_p))
 
@@ -207,6 +206,15 @@ data$md_earn_wne_p10 = log(data$md_earn_wne_p10 + 1)
 model1 = lm(md_earn_wne_p10 ~ . , data = data[v_important])
 
 summary(model1)
+
+# Now let's check the independence assumption of our model 
+plot(data$md_earn_wne_p10, residuals(model1))
+
+# And check the Equal Variance assumption 
+plot(data$md_earn_wne_p10, residuals(model1))
+plot(model1$residuals~model1$fitted,cex=1,pch=0.5,col="gray",cex.lab=1.5,cex.main=1.5,main="Residual Scatterplot")
+abline(h=0,lwd=2)
+
 
 #we used LASSO for the variable selection instead of the in-class methods
 #because in class we started with a lot fewer variables so we didn't have to worry about this
