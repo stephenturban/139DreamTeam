@@ -1,15 +1,9 @@
-# 139DreamTeam
-
-# Team member: Stephen Turban 
-
-# Team member: Kojin
-
-# Team member: Angelina
-
-# Team member: Ezinne 
+ 
 
 #Public Schools in the Private Market:
 #Predicting Future Earnings Based on College Type
+
+Team members: Stephen Turban, Kojin, Angelina, and Ezinne
 
 #Research Question and Motivation
 
