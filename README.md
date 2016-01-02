@@ -47,19 +47,19 @@ We used LASSO at an s-value (measurement of selection rigorousness) of .025 to s
 
 In the regressions we ran, there were four underlying assumptions: the errors are Normally distributed, each predictor variable has a linear relationship with the outcome variable, there is independence of the errors, and the errors have equal variance. We will investigate each of these four assumptions carefully.
 
-1. Normality of Errors
+Normality of Errors:
 
 We started by checking the Normality of our response variable, the median earnings 10 years after college. This data was very right-skewed, so we log transformed it to make the Normality assumption for the outcome variable hold. We also looked at the normality of our errors. In general, it looked the residuals that we looked at had a pretty normal (or at least symmetric) trend. In this case, we said that the assumption of normality of errors was upheld! 
 
-2. Linearity
+Linearity:
 
 Next, we investigated the relationship between the predictors and the outcome variable. Ideally these would all be linear, but they did not turn out to be:Most of these predictors satisfy the assumption that there is a linear relationship between the predictor and the outcome variable. However, there were a few that needed to be investigated further, and possibly transformed: RPY_3YR_RT_SUPP (3-year repayment rate), PCIP 14 (number of engineering majors), and UGDS_ASIAN (total share of enrollment of Asian degree-seeking students). Relationship between untransformed RPY_3YR_RT_SUPP (3-year repayment rate) and median income 10 years after college graduation. Above left: Same relationship after squared transformation of the predictor. Please note, the vertical line in the center is the imputed data. So, we ignore it when looking at linearity.Relationship between untransformed PCIP 14 (engineering majors) and median income 10 years after college graduation. Above left: Same relationship after log transformation of the predictor.UGDS_ASIAN (total share of enrollment of Asian degree-seeking students)actually ended up looking best untransformed.
 
-3. Independence of Residuals
+Independence of Residuals:
 
 The third assumption we had to investigate was independence of the residuals. This is an assumption that needs to be looked at from the study design. In general, there was a strong correlation between some of the observations. For example, Phoenix university (which will be discussed in further detail below) had 69 different campuses. Each of these are considered unique observations, but they all have the same data (e.g. median income, race, etc.) As well, it might be that certain types of schools affect each other. Schools that are similar in type and in owner for private schools might have similar characteristics. In general, we don’t have enough information to fully reject or uphold this assumption. We’ll continue with the project because we can’t do too much to avoid these internal relationships. 
 
-4. Equal Variance of residuals
+Equal Variance of residuals:
 	
 The last assumption to investigate is equal variance of the residuals. The graph looks like we uphold this assumption! 
 
