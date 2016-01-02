@@ -149,7 +149,6 @@ significant_variables = glmnet(x=scale(as.matrix(data[numeric_variables])), y=lo
 coef(significant_variables, s=.025)
 
 
-
 ## So, we end up with a model that has these variables as significant 
 #  UGDS_ASIAN, UGDS, PCIP45, PCIP14, PCIP12, SATMTMID, PCTPELL, PREDDEG, PCTFLOAN, RPY_3YR_RT_SUPP, GRAD_DEBT_MDN_SUPP, GRAD_DEBT_MDN10YR_SUPP
 # NPT4_PRIV, NPT4_PUB, 
@@ -242,6 +241,8 @@ model2 = lm(md_earn_wne_p10 ~ RPY_3YR_RT_SUPP + GRAD_DEBT_MDN10YR_SUPP +
               UGDS_ASIAN + CONTROL + PCIP14 + region + UGDS + PCIP45 + 
               NPT4_PRIV, data = data[v_important])
 
+summary(model2)
+
 # Backward
 step_backward = step(model1, scope=list(lower=model0), direction="backward")
 summary(step_backward)
@@ -251,6 +252,7 @@ model3 = lm(md_earn_wne_p10 ~ UGDS_ASIAN + UGDS + PCIP45 + PCIP14 + PCIP12 +
               SATMTMID + PCTPELL + PREDDEG + PCTFLOAN + RPY_3YR_RT_SUPP + 
               GRAD_DEBT_MDN_SUPP + NPT4_PRIV + CONTROL + LOCALE + region, data = data[v_important])
 
+summary(model3)
 # Stepwise
 step_both = step(model1, scope=list(lower=model0, upper=model1), direction="both")
 summary(step_both)
@@ -260,6 +262,7 @@ model4 = lm(md_earn_wne_p10 ~ UGDS_ASIAN + UGDS + PCIP45 + PCIP14 + PCIP12 +
               SATMTMID + PCTPELL + PREDDEG + PCTFLOAN + RPY_3YR_RT_SUPP + 
               GRAD_DEBT_MDN_SUPP + NPT4_PRIV + CONTROL + LOCALE + region, data = data[v_important]) 
 
+summary(model4)
 #linear model including interactions 
 FullModel=lm(md_earn_wne_p10 ~ .^2, data = data[v_important])
 summary(FullModel)
